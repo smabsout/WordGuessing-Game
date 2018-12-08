@@ -1,74 +1,120 @@
-//initializing alphabet array
-var alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+window.onload = function () {
+    setUpRound();
+}
+var words = ["BootStrap", "JavaScript", "Ninendo", "Playstation", "Xbox", "Tokyo", "Paris", "Rome", "Beirut", "Houston", "Austin", "Cola", "Fanta", "Sprite"];
+var alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
 
-// initializing words to be guessed
-var words = ["playstation","xbox","technology","bootcamp","nintendo","cola","water","juice","zebra","dog","cat","sushi"];
-
-var gameStarted = false;
-var currentWord;
-var hiddenWord;
-var guessesLeft;
-var lettersGuessed;
+//Setting Global Variables
+var activeWord;
+var activeLetters = [];
+var guessedLetters = [];
+var incorrect;
 var wins = 0;
 var losses = 0;
-var getNewWord;
-var wordinArray;
-var correctGuesses;
-var wordArray = [];
-var underscoreArray=[];
 
+//starting the round
+function setUpRound() {
+    var wordContainer = document.getElementById("word"); //Selecting word
+    wordContainer.innerHTML = "";
+    document.getElementById("history").innerHTML = '';
 
-function gameStart (){
-    gameStarted = true;
-    lettersGuessed[];
-    correctGuesses =0;
-    wordinArray = Math.floor(Math.random()*12);
-    currentWord = words[wordinArray];
-    guessesLeft = 20 - currentWord.length;
-    hiddenWord = hiddenWord(currentWord);
-    wordArray = currentWord.split('');
-    underscoreArray = hiddenWord.split('');
-    document.getElementById("currentWord").innerHTML = hiddenWord;
-	document.getElementById("lettersGuessed").innerHTML = "--";
-	document.getElementById("guessesLeft").innerHTML = guessesLeft;
+    document.getElementById("wins").innerHTML = wins;
+    document.getElementById("losses").innerHTML = losses;
+    document.getElementById("gameover").removeAttribute('style');
+    document.getElementById("won").removeAttribute('style');
+
+    activeWord = words[Math.floor(Math.random() * words.length)].toLowerCase(); //Retrieving random word from words array & making it lower case
+    activeLetters = activeWord.split(""); //Splitting word up into an array of letters
+    guessedLetters = []; //Creating an empty array where letters that the user has guessed will go into
+    incorrect = 7; //Number of incorrect guesses
+
+    document.getElementById("incorrect").innerHTML = incorrect;
+
+    console.log(activeWord);
+    //Looping through activeLetters array and creating a tile for each letter
+
+    for (i = 0; i < activeLetters.length; i++) {
+        var tile = document.createElement("span");
+        tile.className = activeLetters[i] + ' nope';
+        if (activeLetters[i] == " ") {
+            tile.className = "space"; //Making spaces visible by default
+        } // end if
+        tile.innerHTML = "<b>" + activeLetters[i] + "</b>";
+        wordContainer.appendChild(tile); //Adding tiles to word
+    }
 }
 
-function hiddenWord (word){  //hide words
-var undscore = "";
-for(i=0; i<word.length-1; i++){
-    undscore+="_";
-}
+function evalLetter() {
+    if (incorrect > 0) {
+        var event = window.event;
+        var inputLetter = event.key;
 
-undscore+="_";
-return undscore;
-}
+        if (alphabet.indexOf(inputLetter) > -1) { //check if input is a letter in the alphabet
 
-function exeGame(letter){
-    var letter = letter.toLowerCase();
+            //Checking to see if the inputted letter has been used during this round
+            var used = guessedLetters.indexOf(inputLetter);
 
-    if(alphabet.indexOf(letter)>-1){
-        if(wordArray.indexOf(letter)>-1){
-            correctGuesses++;
-            displayLetter(letter);
-        }
+            //If letter has not been used
+            if (used === -1) {
+                guessedLetters.push(inputLetter);
+                //Update the history div
+                var history = guessedLetters.join(" ");
+                document.getElementById("history").innerHTML = history;
 
-        else{
-            if(lettersGuessed.indexOf(letter)>-1){
-                return;
+                //If the letter is correct then show the tile
+                if (activeLetters.indexOf(inputLetter) > -1) {
+                    var spans = document.getElementsByClassName(inputLetter);
+
+                    for (i = 0; i < spans.length; i++) {
+                        var classes = inputLetter + " yep";
+                        spans[i].className = classes;
+                    } // end for
+
+                    // Check if user has won entire round
+                    var remainingLetters = document.getElementsByClassName("nope");
+                    if (remainingLetters.length == 0) {
+                        wins = wins + 1;
+                        document.getElementById("wins").innerHTML = wins;
+
+                        //Show the Game Over div
+                        document.getElementById("won").style.display = "block";
+                        countDown();
+
+                    }
+
+                }
+                else {
+                    incorrect = incorrect - 1;
+                    document.getElementById("incorrect").innerHTML = incorrect;
+                    if (incorrect == 0) {
+                        //GameOver
+                        document.getElementById("gameover").style.display = "block";
+                        losses = losses + 1;
+                        document.getElementById("losses").innerHTML = losses;
+                        countDown();
+
+                    }
+                }
+
             }
-            else{
-                guessesLeft--;
-                document.getElementById("guessesLeft").innerHTML = guessesLeft;
-                lettersGuessed.push(letter);
-                if (guessesLeft == 0) {
-					alert("You Failed!! The correct answer is " + currentWord);
-					initialize();
-					losses++;
-					document.getElementById("losses").innerHTML = numLosses;
-				}
-            }
-
         }
     }
 }
 
+function countDown() {
+    var counter = 10;
+    var countDown = document.getElementById("countDown");
+    countDown.innerHTML = "The next round will start in 10 seconds.";
+    var id;
+
+    id = setInterval(function () {
+        counter--;
+        if (counter < 0) {
+            countDown.innerHTML = '';
+            setUpRound();
+            clearInterval(id);
+        } else {
+            countDown.innerHTML = "The next round will start in " + counter.toString() + " seconds.";
+        }
+    }, 1000);
+}
