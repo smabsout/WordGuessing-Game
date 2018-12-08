@@ -33,7 +33,42 @@ function gameStart (){
 	document.getElementById("guessesLeft").innerHTML = guessesLeft;
 }
 
-function hiddenWord (word){
-    
+function hiddenWord (word){  //hide words
+var undscore = "";
+for(i=0; i<word.length-1; i++){
+    undscore+="_";
+}
+
+undscore+="_";
+return undscore;
+}
+
+function exeGame(letter){
+    var letter = letter.toLowerCase();
+
+    if(alphabet.indexOf(letter)>-1){
+        if(wordArray.indexOf(letter)>-1){
+            correctGuesses++;
+            displayLetter(letter);
+        }
+
+        else{
+            if(lettersGuessed.indexOf(letter)>-1){
+                return;
+            }
+            else{
+                guessesLeft--;
+                document.getElementById("guessesLeft").innerHTML = guessesLeft;
+                lettersGuessed.push(letter);
+                if (guessesLeft == 0) {
+					alert("You Failed!! The correct answer is " + currentWord);
+					initialize();
+					losses++;
+					document.getElementById("losses").innerHTML = numLosses;
+				}
+            }
+
+        }
+    }
 }
 
