@@ -1,8 +1,10 @@
 window.onload = function () {
-    setUpRound();
+    startGame();
 }
 var words = ["BootStrap", "JavaScript", "Ninendo", "Playstation", "Xbox", "Tokyo", "Paris", "Rome", "Beirut", "Houston", "Austin", "Cola", "Fanta", "Sprite"];
 var alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
+
+
 
 //Setting Global Variables
 var activeWord;
@@ -13,32 +15,32 @@ var wins = 0;
 var losses = 0;
 
 //starting the round
-function setUpRound() {
+function startGame() {
     var wordContainer = document.getElementById("word"); //Selecting word
     wordContainer.innerHTML = "";
-    document.getElementById("history").innerHTML = '';
+    document.getElementById("guessed").innerHTML = '';
 
     document.getElementById("wins").innerHTML = wins;
     document.getElementById("losses").innerHTML = losses;
     document.getElementById("gameover").removeAttribute('style');
     document.getElementById("won").removeAttribute('style');
 
-    activeWord = words[Math.floor(Math.random() * words.length)].toLowerCase(); //Retrieving random word from words array & making it lower case
+    activeWord = words[Math.floor(Math.random() * words.length)].toLowerCase(); //getting word from array and making it lowercase
     activeLetters = activeWord.split(""); //Splitting word up into an array of letters
-    guessedLetters = []; //Creating an empty array where letters that the user has guessed will go into
-    incorrect = 7; //Number of incorrect guesses
+    guessedLetters = []; //Guessed words go here!
+    incorrect = 10; //Number of incorrect guesses
 
     document.getElementById("incorrect").innerHTML = incorrect;
 
     console.log(activeWord);
-    //Looping through activeLetters array and creating a tile for each letter
+    //Making tiles for each letter
 
     for (i = 0; i < activeLetters.length; i++) {
-        var tile = document.createElement("span");
+        var tile = document.createElement("tile");
         tile.className = activeLetters[i] + ' nope';
         if (activeLetters[i] == " ") {
             tile.className = "space"; //Making spaces visible by default
-        } // end if
+        } 
         tile.innerHTML = "<b>" + activeLetters[i] + "</b>";
         wordContainer.appendChild(tile); //Adding tiles to word
     }
@@ -57,18 +59,18 @@ function evalLetter() {
             //If letter has not been used
             if (used === -1) {
                 guessedLetters.push(inputLetter);
-                //Update the history div
-                var history = guessedLetters.join(" ");
-                document.getElementById("history").innerHTML = history;
+                //Update the guessed div
+                var guessed = guessedLetters.join(" ");
+                document.getElementById("guessed").innerHTML = guessed;
 
                 //If the letter is correct then show the tile
                 if (activeLetters.indexOf(inputLetter) > -1) {
-                    var spans = document.getElementsByClassName(inputLetter);
+                    var span = document.getElementsByClassName(inputLetter);
 
-                    for (i = 0; i < spans.length; i++) {
+                    for (i = 0; i < span.length; i++) {
                         var classes = inputLetter + " yep";
-                        spans[i].className = classes;
-                    } // end for
+                        span[i].className = classes;
+                    } 
 
                     // Check if user has won entire round
                     var remainingLetters = document.getElementsByClassName("nope");
@@ -111,7 +113,7 @@ function countDown() {
         counter--;
         if (counter < 0) {
             countDown.innerHTML = '';
-            setUpRound();
+            startGame();
             clearInterval(id);
         } else {
             countDown.innerHTML = "The next round will start in " + counter.toString() + " seconds.";

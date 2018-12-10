@@ -1,29 +1,27 @@
 
 body {
-    font-family: 'Henny Penny', cursive;
-    color: #000;
+    font-family: 'Unlock', cursive;
+    color: green;
     font-size: 24px;
     background-color: #ececec;
     padding-bottom: 20px;
+   
   }
   .main-content h3 {
     font-size: 24px;
   }
-  .top-banner {
-    height: 263px;
-    width: 100%;
-    overflow: hidden;
-  }
+
   #word {
     margin: 2em 0;
     text-align: center;
+    color: green;
   }
   #word b {
     visibility: hidden;
   }
   #word span {
     display: inline-block;
-    border-bottom: 2px solid #000;
+    border-bottom: 2px solid green;
     margin: 5px;
     min-width: 1em;
   }
@@ -42,4 +40,4 @@ body {
   /* Custom Media Queries */
   @media (max-width: 767.98px) {
     }
-   }
+   
