@@ -51,7 +51,7 @@ function evalLetter() {
         var event = window.event;
         var inputLetter = event.key;
 
-        if (alphabet.indexOf(inputLetter) > -1) { //check if input is a letter in the alphabet
+        if (alphabet.indexOf(inputLetter) > -1) { //alphabet checker
 
             //Checking to see if the inputted letter has been used during this round
             var used = guessedLetters.indexOf(inputLetter);
@@ -102,6 +102,8 @@ function evalLetter() {
         }
     }
 }
+
+//counter function to start another round! 
 
 function countDown() {
     var counter = 10;
